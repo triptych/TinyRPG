@@ -311,6 +311,16 @@ onKeyPress(["left", "right", "up", "down"], () => {
   }
 
 });
+onKeyPress("m", () => {
+  if (music) {
+    if (music.isPaused()) {
+      music.play()
+    } else {
+      music.pause()
+    }
+
+  }
+})
 
 onKeyRelease(["left", "right", "up", "down"], () => {
   if (
@@ -361,7 +371,8 @@ function spin() {
       }
     },
     spin() {
-      spinning = true
+      spinning = true;
+      play("swoosh");
     },
   }
 }

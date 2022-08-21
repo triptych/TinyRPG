@@ -2993,6 +2993,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     console.log("loadsounds called");
     loadSound("background", "../sounds/Living%20Everyday%20-%20World%20Music%20-%20(Azyiisenne%20Ese).mp3");
     loadSound("step", "../sounds/Retro%20FootStep%2003.wav");
+    loadSound("swoosh", "../sounds/Retro%20Swooosh%2002.wav");
   }, "loadSounds");
 
   // code/main.js
@@ -3252,6 +3253,15 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       });
     }
   });
+  onKeyPress("m", () => {
+    if (music) {
+      if (music.isPaused()) {
+        music.play();
+      } else {
+        music.pause();
+      }
+    }
+  });
   onKeyRelease(["left", "right", "up", "down"], () => {
     if (!isKeyDown("left") && !isKeyDown("right") && !isKeyDown("up") && !isKeyDown("down")) {
       player.play("idle");
@@ -3288,6 +3298,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       },
       spin() {
         spinning = true;
+        play("swoosh");
       }
     };
   }

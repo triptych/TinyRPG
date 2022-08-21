@@ -2,6 +2,12 @@
 
 Tiny RPG is a Kaboom JS based game which has you going on a tiny adventure to save the world, and get loot!
 
+##
+Controls:
+ * LEFT, RIGHT, UP, DOWN - move
+ * SPACE - swing sword, open chest
+ * m - pause / resume music 
+
 ---
 Credits:
 Initial code: 
