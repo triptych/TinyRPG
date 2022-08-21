@@ -262,6 +262,7 @@ onKeyPress("space", () => {
         c.opened = false
       } else {
         c.play("open")
+        play("open");
         c.opened = true
       }
       interacted = true

@@ -6,4 +6,5 @@ export const loadSounds = () => {
 
   loadSound("step", "../sounds/Retro%20FootStep%2003.wav");
   loadSound("swoosh", "../sounds/Retro%20Swooosh%2002.wav");
+  loadSound("open", "../sounds/Retro%20Event%20UI%2001.wav")
 }
