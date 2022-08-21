@@ -2988,6 +2988,13 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     return map2;
   }, "loadGameScene");
 
+  // code/lib/sound.js
+  var loadSounds = /* @__PURE__ */ __name(() => {
+    console.log("loadsounds called");
+    loadSound("background", "../sounds/Living%20Everyday%20-%20World%20Music%20-%20(Azyiisenne%20Ese).mp3");
+    loadSound("step", "../sounds/Retro%20FootStep%2003.wav");
+  }, "loadSounds");
+
   // code/main.js
   var baseStyles = [
     "color: red",
@@ -3015,6 +3022,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     "up": UP,
     "down": DOWN
   };
+  loadSounds();
+  var music = play("background", {
+    volume: 0.5,
+    loop: true
+  });
   loadSpriteAtlas("sprites/dungeon.png", {
     "hero": {
       x: 128,
@@ -3226,12 +3238,24 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   onKeyDown("down", () => {
     player.move(0, SPEED);
   });
+  stepping = false;
+  var sound_step = null;
   onKeyPress(["left", "right", "up", "down"], () => {
     player.play("run");
+    if (!stepping) {
+      if (sound_step) {
+        sound_step.pause();
+      }
+      sound_step = play("step", {
+        loop: true,
+        speed: 0.25
+      });
+    }
   });
   onKeyRelease(["left", "right", "up", "down"], () => {
     if (!isKeyDown("left") && !isKeyDown("right") && !isKeyDown("up") && !isKeyDown("down")) {
       player.play("idle");
+      sound_step.pause();
     }
   });
   xDirection = 10;

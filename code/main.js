@@ -1,5 +1,6 @@
 import kaboom from "kaboom"
 import { loadGameScene } from "./scenes/game.js"
+import { loadSounds } from "./lib/sound.js"
 
 let baseStyles = [
   "color: red",
@@ -42,6 +43,17 @@ const dirs = {
   "up": UP,
   "down": DOWN,
 };
+
+// load sounds
+loadSounds();
+
+const music = play("background", {
+  volume: 0.5,
+  loop: true
+})
+
+
+
 
 // load sprites
 loadSpriteAtlas("sprites/dungeon.png", {
@@ -284,8 +296,20 @@ onKeyDown("down", () => {
   player.move(0, SPEED)
 })
 
+stepping = false;
+let sound_step = null;
 onKeyPress(["left", "right", "up", "down"], () => {
   player.play("run")
+  if (!stepping) {
+    if (sound_step) {
+      sound_step.pause()
+    }
+    sound_step = play("step", {
+      loop: true,
+      speed: .25
+    })
+  }
+
 });
 
 onKeyRelease(["left", "right", "up", "down"], () => {
@@ -295,7 +319,8 @@ onKeyRelease(["left", "right", "up", "down"], () => {
     && !isKeyDown("up")
     && !isKeyDown("down")
   ) {
-    player.play("idle")
+    player.play("idle");
+    sound_step.pause()
   }
 })
 

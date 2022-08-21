@@ -1,0 +1,8 @@
+/** imports here **/
+
+export const loadSounds = () => {
+  console.log("loadsounds called")
+  loadSound("background", "../sounds/Living%20Everyday%20-%20World%20Music%20-%20(Azyiisenne%20Ese).mp3")
+
+  loadSound("step", "../sounds/Retro%20FootStep%2003.wav");
+}
