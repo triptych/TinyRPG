@@ -2997,7 +2997,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     loadSound("open", "../sounds/Retro%20Event%20UI%2001.wav");
   }, "loadSounds");
 
-  // code/main.js
+  // code/lib/constants.js
   var baseStyles = [
     "color: red",
     "background-color: #444",
@@ -3007,12 +3007,171 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     "font-size: 3em",
     "box-shadow: 4px 4px 4px tan"
   ].join(";");
+  var SPEED = 120;
+
+  // code/lib/sprites.js
+  var loadSprites = /* @__PURE__ */ __name(() => {
+    loadSpriteAtlas("sprites/dungeon.png", {
+      "hero": {
+        x: 128,
+        y: 68,
+        width: 144,
+        height: 28,
+        sliceX: 9,
+        anims: {
+          idle: {
+            from: 0,
+            to: 3,
+            speed: 3,
+            loop: true
+          },
+          run: {
+            from: 4,
+            to: 7,
+            speed: 10,
+            loop: true
+          },
+          hit: 8
+        }
+      },
+      "ogre": {
+        "x": 16,
+        "y": 320,
+        "width": 256,
+        "height": 32,
+        "sliceX": 8,
+        "anims": {
+          "idle": {
+            "from": 0,
+            "to": 3,
+            "speed": 3.5,
+            "loop": true
+          },
+          "run": {
+            "from": 4,
+            "to": 7,
+            "speed": 10,
+            "loop": true
+          }
+        }
+      },
+      "sword": {
+        "x": 322,
+        "y": 81,
+        "width": 12,
+        "height": 30
+      },
+      "floor": {
+        "x": 16,
+        "y": 64,
+        "width": 48,
+        "height": 48,
+        "sliceX": 3,
+        "sliceY": 3
+      },
+      "wall": {
+        "x": 16,
+        "y": 16,
+        "width": 16,
+        "height": 16
+      },
+      "wall_top": {
+        "x": 16,
+        "y": 0,
+        "width": 16,
+        "height": 16
+      },
+      "wall_left": {
+        "x": 16,
+        "y": 128,
+        "width": 16,
+        "height": 16
+      },
+      "wall_right": {
+        "x": 0,
+        "y": 128,
+        "width": 16,
+        "height": 16
+      },
+      "wall_topleft": {
+        "x": 32,
+        "y": 128,
+        "width": 16,
+        "height": 16
+      },
+      "wall_topright": {
+        "x": 48,
+        "y": 128,
+        "width": 16,
+        "height": 16
+      },
+      "wall_botleft": {
+        "x": 32,
+        "y": 144,
+        "width": 16,
+        "height": 16
+      },
+      "wall_botright": {
+        "x": 48,
+        "y": 144,
+        "width": 16,
+        "height": 16
+      },
+      "chest": {
+        "x": 304,
+        "y": 304,
+        "width": 48,
+        "height": 16,
+        "sliceX": 3,
+        "anims": {
+          "open": {
+            "from": 0,
+            "to": 2,
+            "speed": 20,
+            "loop": false
+          },
+          "close": {
+            "from": 2,
+            "to": 0,
+            "speed": 20,
+            "loop": false
+          }
+        }
+      }
+    });
+  }, "loadSprites");
+
+  // code/lib/helpers.js
+  var spin = /* @__PURE__ */ __name((swinging2) => {
+    let spinning = false;
+    swinging2 = false;
+    return {
+      id: "spin",
+      update() {
+        if (spinning) {
+          this.angle += 1200 * dt();
+          if (this.angle >= 360) {
+            this.angle = 0;
+            spinning = false;
+            swinging2 = false;
+          }
+        }
+      },
+      spin() {
+        spinning = true;
+        swinging2 = true;
+        play("swoosh");
+      }
+    };
+  }, "spin");
+
+  // code/main.js
+  var swinging = false;
   console.log("%cTinyRPG v0.03", baseStyles);
   no({
     scale: 4,
     background: [0, 0, 0, 1]
   });
-  var SPEED = 120;
   layers([
     "bg",
     "obj",
@@ -3029,134 +3188,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     volume: 0.5,
     loop: true
   });
-  loadSpriteAtlas("sprites/dungeon.png", {
-    "hero": {
-      x: 128,
-      y: 68,
-      width: 144,
-      height: 28,
-      sliceX: 9,
-      anims: {
-        idle: {
-          from: 0,
-          to: 3,
-          speed: 3,
-          loop: true
-        },
-        run: {
-          from: 4,
-          to: 7,
-          speed: 10,
-          loop: true
-        },
-        hit: 8
-      }
-    },
-    "ogre": {
-      "x": 16,
-      "y": 320,
-      "width": 256,
-      "height": 32,
-      "sliceX": 8,
-      "anims": {
-        "idle": {
-          "from": 0,
-          "to": 3,
-          "speed": 3.5,
-          "loop": true
-        },
-        "run": {
-          "from": 4,
-          "to": 7,
-          "speed": 10,
-          "loop": true
-        }
-      }
-    },
-    "sword": {
-      "x": 322,
-      "y": 81,
-      "width": 12,
-      "height": 30
-    },
-    "floor": {
-      "x": 16,
-      "y": 64,
-      "width": 48,
-      "height": 48,
-      "sliceX": 3,
-      "sliceY": 3
-    },
-    "wall": {
-      "x": 16,
-      "y": 16,
-      "width": 16,
-      "height": 16
-    },
-    "wall_top": {
-      "x": 16,
-      "y": 0,
-      "width": 16,
-      "height": 16
-    },
-    "wall_left": {
-      "x": 16,
-      "y": 128,
-      "width": 16,
-      "height": 16
-    },
-    "wall_right": {
-      "x": 0,
-      "y": 128,
-      "width": 16,
-      "height": 16
-    },
-    "wall_topleft": {
-      "x": 32,
-      "y": 128,
-      "width": 16,
-      "height": 16
-    },
-    "wall_topright": {
-      "x": 48,
-      "y": 128,
-      "width": 16,
-      "height": 16
-    },
-    "wall_botleft": {
-      "x": 32,
-      "y": 144,
-      "width": 16,
-      "height": 16
-    },
-    "wall_botright": {
-      "x": 48,
-      "y": 144,
-      "width": 16,
-      "height": 16
-    },
-    "chest": {
-      "x": 304,
-      "y": 304,
-      "width": 48,
-      "height": 16,
-      "sliceX": 3,
-      "anims": {
-        "open": {
-          "from": 0,
-          "to": 2,
-          "speed": 20,
-          "loop": false
-        },
-        "close": {
-          "from": 2,
-          "to": 0,
-          "speed": 20,
-          "loop": false
-        }
-      }
-    }
-  });
+  loadSprites();
   addLevel([
     "xxxxxxxxxx",
     "          ",
@@ -3179,7 +3211,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   var player = add([
     pos(map.getPos(2, 2)),
     sprite("hero", { anim: "idle" }),
-    area({ width: 12, height: 12, offset: vec2(0, 6) }),
+    area({
+      width: 12,
+      height: 12,
+      offset: vec2(0, 6)
+    }),
     solid(),
     origin("center")
   ]);
@@ -3202,8 +3238,15 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     origin("bot"),
     rotate(0),
     follow(player, vec2(-4, 9)),
-    spin()
+    spin(swinging),
+    area()
   ]);
+  sword.onCollide("enemy", (enemy) => {
+    console.log("collision with enemy ");
+    if (swinging) {
+      destroy(enemy);
+    }
+  });
   onKeyPress("space", () => {
     let interacted = false;
     every("chest", (c) => {
@@ -3285,26 +3328,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       yDirection = -yDirection;
     }
   });
-  function spin() {
-    let spinning = false;
-    return {
-      id: "spin",
-      update() {
-        if (spinning) {
-          this.angle += 1200 * dt();
-          if (this.angle >= 360) {
-            this.angle = 0;
-            spinning = false;
-          }
-        }
-      },
-      spin() {
-        spinning = true;
-        play("swoosh");
-      }
-    };
-  }
-  __name(spin, "spin");
   var scorebox = add([
     rect(100, 11),
     pos(1, 1),
